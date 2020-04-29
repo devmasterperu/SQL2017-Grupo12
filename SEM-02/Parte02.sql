@@ -50,5 +50,46 @@ and ltrim(nombres)+' '+ltrim(apellidos) LIKE '%M__'--Personas cuyo antepenúltimo
 /*
 and rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) LIKE '_E%E_'--Personas cuyo segundo y penúltimo carácter del nombre completo sea “E”
 */
-and rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) LIKE '[aeiou]%[aeiou]'
+/*
+and rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) LIKE '[aeiou]%[aeiou]'--Personas cuyo nombre completo inicie y finalice con una vocal
+*/
+/*
+and rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) LIKE '[^aeiou]%[^aeiou]' --Personas cuyo nombre completo inicie y finalice con una consonante
+and rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) NOT LIKE '%.%'
+*/
+/*
+and rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) LIKE '[aeiou]%[^aeiou]' --Personas cuyo nombre completo inicie con una vocal y finalice con una consonante
+*/
+/*
+and direccion like 'A%' and idubigeo in (7,8,9,10)--Personas cuya dirección inicie con “A” y sean del ubigeo “Leoncio Prado”,“Paccho”, “Santa Leonor” y “Santa María”
+*/
+/*
+and rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) like 'E%' or idubigeo in (8,9,10) --Personas cuyo nombre completo inicie con “E” o sean del ubigeo “Paccho”,“Santa Leonor” y “Santa María”
+*/
+/*
+--Personas cuya dirección inicie con “A” y sean del ubigeo “Leoncio Prado”,
+--“Paccho”, “Santa Leonor” y “Santa María” Y nombre completo inicie con
+--“E” o sean del ubigeo “Paccho”, “Santa Leonor” y “Santa María”
+and 
+--P [V]
+(direccion like 'A%' and idubigeo in (7,8,9,10)) 
+and 
+--Q [F OR V]=V
+(rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) like 'E%' or idubigeo in (8,9,10)) --Q
+*/
+/*
+--Personas cuya dirección inicie con “A” y sean del ubigeo “Leoncio Prado”,
+--“Paccho”, “Santa Leonor” y “Santa María” O nombre completo inicie con
+--“E” o sean del ubigeo “Paccho”, “Santa Leonor” y “Santa María”.
+and 
+(
+	(direccion like 'A%' and idubigeo in (7,8,9,10)) --P 
+	or
+	(rtrim(ltrim(nombres))+' '+rtrim(ltrim(apellidos)) like 'E%' or idubigeo in (8,9,10)) --Q
+)
+*/
+--Personas cuya dirección NO cumpla la siguiente condición: Iniciar con “A”
+--y sean del ubigeo “Leoncio Prado”, “Paccho”, “Santa Leonor” y “Santa
+--María”.
+and NOT (direccion like 'A%' and idubigeo in (7,8,9,10)) 
 order by NOMBRE_COMPLETO asc --Parte 03
