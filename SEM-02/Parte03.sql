@@ -36,3 +36,43 @@ from Padron
 where idtipo<>'06' and apellidos<>''--No empresas
 group by sexo,idubigeo --Campos agrupadores
 order by idubigeo 
+
+--02.09
+--Determinar la cantidad de ocurrencias por nombre(s)
+--Ordenar y determinar los 6 primeros con mayor número de ocurrencias
+select top(6) rtrim(ltrim(nombres)) as NOMBRES,count(idpadron) as NUMERO
+from Padron
+where idtipo<>'06' and apellidos<>''--No empresas
+group by rtrim(ltrim(nombres)) --Campos agrupadores
+order by NUMERO desc --Mayor a menor total
+
+--Ordenar y determinar el primer 6% con mayor número de ocurrencias
+select top(6) percent -- 0.06*609=>36.54=37
+rtrim(ltrim(nombres)) as NOMBRES,count(idpadron) as NUMERO
+from Padron
+where idtipo<>'06' and apellidos<>''--No empresas
+group by rtrim(ltrim(nombres)) --Campos agrupadores
+order by NUMERO desc --Mayor a menor total
+
+
+/*
+Ordenar y determinar los 7 primeros, incluyendo empates,
+con mayor número de ocurrencias
+*/
+select top(7) with ties --Ties=>Incluir empates del 7° puesto
+rtrim(ltrim(nombres)) as NOMBRES,count(idpadron) as NUMERO
+from Padron
+where idtipo<>'06' and apellidos<>''--No empresas
+group by rtrim(ltrim(nombres)) --Campos agrupadores
+order by NUMERO desc --Mayor a menor total
+
+/*
+Ordenar y determinar el primer 7%, incluyendo empates,
+con mayor número de ocurrencias
+*/
+select top(7) percent with ties --0.07*609=>42.63=43
+rtrim(ltrim(nombres)) as NOMBRES,count(idpadron) as NUMERO
+from Padron
+where idtipo<>'06' and apellidos<>''--No empresas
+group by rtrim(ltrim(nombres)) --Campos agrupadores
+order by NUMERO desc --Mayor a menor total
