@@ -27,3 +27,12 @@ order by idubigeo
 
 update Padron set sexo='F' where idpadron=3 --Asignar el sexo F al registro con id 3
 update Padron set sexo='M' where idpadron=2 --Asignar el sexo M al registro con id 2
+
+--02.08
+select idubigeo as UBIGEO,isnull(sexo,'-') as SEXO,count(idpadron) as TOTAL,
+max(ltrim(apellidos)) as [MAX-APELLIDOS],--Más cercano a la Z
+min(ltrim(apellidos)) as [MIN-APELLIDOS]--Más cercano a la A
+from Padron
+where idtipo<>'06' and apellidos<>''--No empresas
+group by sexo,idubigeo --Campos agrupadores
+order by idubigeo 
