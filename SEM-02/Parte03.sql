@@ -76,3 +76,24 @@ from Padron
 where idtipo<>'06' and apellidos<>''--No empresas
 group by rtrim(ltrim(nombres)) --Campos agrupadores
 order by NUMERO desc --Mayor a menor total
+
+--02.11
+select top(2) idsector as SECTOR, 
+count(idmanzana) as MANZANAS,
+concat('El sector ',idsector,' tiene ',count(idmanzana),' manzanas.') as MENSAJE
+from Manzana
+where estado=1 --Manzanas activas
+group by idsector  --Campos agrupador
+order by count(idmanzana) desc
+
+--02.12
+select top(2) with ties idsector as SECTOR, 
+count(idmanzana) as MANZANAS,
+concat('El sector ',idsector,' tiene ',count(idmanzana),' manzanas.') as MENSAJE
+from Manzana
+where estado=1 --Manzanas activas
+group by idsector  --Campos agrupador
+order by count(idmanzana) desc
+
+--02.13
+
