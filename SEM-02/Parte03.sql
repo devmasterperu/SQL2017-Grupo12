@@ -54,7 +54,7 @@ where idtipo<>'06' and apellidos<>''--No empresas
 group by rtrim(ltrim(nombres)) --Campos agrupadores
 order by NUMERO desc --Mayor a menor total
 
-
+--02.10
 /*
 Ordenar y determinar los 7 primeros, incluyendo empates,
 con mayor número de ocurrencias
