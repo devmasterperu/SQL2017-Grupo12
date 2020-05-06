@@ -97,3 +97,22 @@ order by count(idmanzana) desc
 
 --02.13
 
+select ltrim(nombres)+' '+ltrim(apellidos) as NOMBRE_COMPLETO
+from Padron
+where idtipo<>'06' and ltrim(nombres)+' '+ltrim(apellidos)<>''--No empresas
+order by NOMBRE_COMPLETO asc
+--Página 1 y tamaño de página 10=>Posición 1 a la 10.
+/*
+OFFSET 0 ROWS --Cuantas posiciones dejo atrás.
+FETCH NEXT 10 ROWS ONLY --Cuantas posiciones hacia adelante
+*/
+--Página 2 y tamaño de página 10=>Posición 11 a la 20.
+/*
+OFFSET 10 ROWS --Cuantas posiciones dejo atrás.
+FETCH NEXT 10 ROWS ONLY --Cuantas posiciones hacia adelante
+*/
+--Página 3 y tamaño de página 10=>Posición 21 a la 30.
+/*
+OFFSET 20 ROWS --Cuantas posiciones dejo atrás.
+FETCH NEXT 10 ROWS ONLY --Cuantas posiciones hacia adelante
+*/
