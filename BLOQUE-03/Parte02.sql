@@ -23,3 +23,27 @@ left join Asignacion a on t.idtrabajador=a.idencuestador
 --NOMBRE_COMPLETO
 inner join Padron p on t.idpadron=p.idpadron
 where t.tipo='E' and t.estado=1
+
+--03.09
+
+select t.usuario as USUARIO,
+p.nombres+' '+p.apellidos as NOMBRE_COMPLETO,
+isnull(m.nombre,'0000') as [MANZANA],isnull(a.fecinicio,'9999-12-31') as [FECHA INICIO],
+isnull(a.fecfin,'9999-12-31') as [FECHA FIN]
+from Trabajador t 
+left join Asignacion a on t.idtrabajador=a.idencuestador
+--NOMBRE_COMPLETO
+inner join Padron p on t.idpadron=p.idpadron
+--MANZANA
+left join Manzana m on a.idmanzana=m.idmanzana
+where t.tipo='E' and t.estado=1
+
+--03.10
+select isnull(t.usuario,'-') as USUARIO,a.idencuestador as [ID ENCUESTADOR],
+a.idmanzana as [ID MANZANA],isnull(a.fecinicio,'9999-12-31') as [FECHA INICIO],
+isnull(a.fecfin,'9999-12-31') as [FECHA FIN],t.tipo,t.estado
+from Trabajador t 
+right join Asignacion a on t.idtrabajador=a.idencuestador
+--where t.tipo='E' and t.estado=1
+where isnull(t.tipo,'E')='E' and isnull(t.estado,1)=1
+
