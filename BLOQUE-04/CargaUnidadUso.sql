@@ -3003,3 +3003,6 @@ insert into UnidadUso(idunidaduso,descripcion,categoria,idficha)
 values (1000,'COMERCIAL 1ER PISO','COM',99999)
 go
 SET IDENTITY_INSERT UnidadUso OFF
+
+select count(1) from UnidadUso
+select * from Ficha where idficha in (99998,99999)
