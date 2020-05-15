@@ -201,3 +201,59 @@ select * from Padron where numdoc in ('46173387','46173388')
 		  inner join Padron p on c.idpadron=p.idpadron
 		  where f.montopago=f.costo
 	  --) f
+
+	  --04.10
+
+	  select tipoconsumidor,
+	  case 
+	  when tipoconsumidor='P' then 10.00+numhabitantes* 20.00 
+	  when tipoconsumidor='M' then 15.00+numhabitantes* 25.00
+	  when tipoconsumidor='G' then 20.00+numhabitantes* 30.00
+	  end as costo
+	  from Ficha
+
+		  update f
+		  set    f.costo=NULL
+		  from   Ficha f
+
+	  --FORMA 01
+	  BEGIN TRAN
+		  update f
+		  set    f.costo= case 
+						  when tipoconsumidor='P' then 10.00+numhabitantes* 20.00 
+						  when tipoconsumidor='M' then 15.00+numhabitantes* 25.00
+						  when tipoconsumidor='G' then 20.00+numhabitantes* 30.00
+						  end
+		  from   Ficha f
+	  ROLLBACK
+
+	  --FORMA 02
+	  BEGIN TRAN
+		  update f
+		  set    f.costo= 10.00+numhabitantes* 20.00 		 
+		  from   Ficha f
+		  where  tipoconsumidor='P'
+
+		  update f
+		  set    f.costo= 15.00+numhabitantes* 25.00 		 
+		  from   Ficha f
+		  where  tipoconsumidor='M'
+
+		  update f
+		  set    f.costo= 20.00+numhabitantes* 30.00		 
+		  from   Ficha f
+		  where  tipoconsumidor='G'
+
+	  ROLLBACK
+
+	select concat(p.nombres,' ', p.apellidos) as NOMBRE_COMPLETO,f.tipoconsumidor as TIPO_CONSUMIDOR,
+	f.numhabitantes as [N° HABITANTES],f.montopago as MONTO_PAGO,f.costo as COSTO_CALCULADO,
+	case 
+	when f.montopago>f.costo then 'Cliente genera ganancia'
+	when f.montopago<f.costo then 'Cliente genera pérdida'
+	when f.montopago=f.costo then 'Cliente no genera pérdida ni ganancia'
+	else 'No es posible mostrar mensaje' end as MENSAJE
+	from Ficha f
+	inner join Cliente c on f.idcliente=c.idcliente
+	inner join Padron p on c.idpadron=p.idpadron
+	where f.montopago=f.costo
