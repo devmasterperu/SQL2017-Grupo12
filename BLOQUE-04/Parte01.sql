@@ -137,3 +137,36 @@ select * from Padron where numdoc in ('46173387','46173388')
 	 ROLLBACK
 
 	 select * from Padron where idpadron=100
+
+	 --04.08
+	 select * from Asignacion where idencuestador=23 and idmanzana=7
+
+	 BEGIN TRAN
+		update a
+		set  a.fecinicio='2020-02-01',fecfin='2020-12-31',idsupervisor='2020-12-31'
+		from Asignacion a
+		where idmanzana=7 and idencuestador=23
+	 ROLLBACK
+
+	  select * from Asignacion where idencuestador=23 and idmanzana=7
+
+	 --04.09.00
+	     begin tran
+			 update u
+			 set descripcion='COMERCIAL PISO 01'
+			 from UnidadUso u 
+			 inner join Ficha f on u.idficha=f.idficha
+			 inner join Manzana m on f.idmanzana=m.idmanzana
+			 where idsector=1 and categoria='COM'
+		 rollback
+
+		 select u.*
+		 from UnidadUso u 
+		 inner join Ficha f on u.idficha=f.idficha
+		 inner join Manzana m on f.idmanzana=m.idmanzana
+		 where idsector=1 and categoria='COM'
+
+
+
+
+
