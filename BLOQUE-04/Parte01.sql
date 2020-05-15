@@ -150,7 +150,8 @@ select * from Padron where numdoc in ('46173387','46173388')
 
 	  select * from Asignacion where idencuestador=23 and idmanzana=7
 
-	 --04.09.00
+	 --04.09
+	     /*
 	     begin tran
 			 update u
 			 set descripcion='COMERCIAL PISO 01'
@@ -165,8 +166,38 @@ select * from Padron where numdoc in ('46173387','46173388')
 		 inner join Ficha f on u.idficha=f.idficha
 		 inner join Manzana m on f.idmanzana=m.idmanzana
 		 where idsector=1 and categoria='COM'
+		 */
 
+	  select * from Ficha
+	  select * from Ficha where numhabitantes between 2 and 4
 
+	  --FORMULA: Costo Calculado: 10.00+ N° Habitantes * 20.00, solo para las fichas con
+	  --número de habitantes entre 2 y 4.
 
+	  BEGIN TRAN
+		--update Ficha set costo=10+numhabitantes*20
+		update Ficha set costo=10+numhabitantes*20 where numhabitantes between 2 and 4
+	  ROLLBACK
 
-
+	  --select
+	  --case when f.MONTO_PAGO>f.COSTO_CALCULADO then 'Cliente genera ganancia' end as MENSAJE
+	  --from
+	  --(
+		  select 
+		  ltrim(p.nombres)+' '+ltrim(p.apellidos) as NOMBRE_COMPLETO,
+		  montopago as MONTO_PAGO,
+		  costo as COSTO_CALCULADO,
+		  case 
+		  when f.montopago>f.costo then 'Cliente genera ganancia'  
+		  when f.montopago<f.costo then 'Cliente genera pérdida'  
+		  else 'Cliente no genera pérdida ni ganancia'
+		  end as MENSAJE1,
+		  case 
+		  when f.montopago>f.costo then 'Cliente genera ganancia'  
+		  else 'Cliente genera pérdida'
+		  end as MENSAJ2
+		  from Ficha f 
+		  inner join Cliente c on f.idcliente=c.idcliente
+		  inner join Padron p on c.idpadron=p.idpadron
+		  where f.montopago=f.costo
+	  --) f
