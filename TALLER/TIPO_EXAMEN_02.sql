@@ -54,3 +54,8 @@ select tipo,numero,idcliente,estado from comercial.Telefono where idtelefono bet
 rollback
 
 select count(1) from Telefono
+
+--04
+
+select isnull(z.idzona,0),isnull(z.nombre,'-'),isnull(z.idubigeo,0),isnull(u.idubigeo,0)
+from Zona z full outer join Ubigeo u on z.idubigeo=u.idubigeo
