@@ -76,3 +76,111 @@ from Ficha f inner join Cliente c on f.idcliente=c.idcliente
 inner join Padron p on c.idpadron=p.idpadron
 where f.montopago>(select AVG(montopago) from Ficha)
 order by MTOPAGO desc
+
+--05.12
+
+--SUBCONSULTAS
+--Fichas registradas por cada encuestador
+select idtrabajador,count(idficha) as total from Ficha group by idtrabajador
+--Promedio de fichas registradas de todos los encuestadores
+select AVG(re.total)
+from (select idtrabajador,count(idficha) as total from Ficha group by idtrabajador) re
+
+select idtrabajador as [ID ENCUESTADOR],
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador) as [TOTAL FICHAS],
+(select AVG(re.total) from 
+	(select idtrabajador,count(idficha) as total from Ficha group by idtrabajador) re
+) as [TOTAL PROM]
+from Trabajador t
+where t.tipo='E' and 
+--[TOTAL FICHAS]
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador)>
+--[TOTAL PROM]
+(select AVG(re.total) from 
+	(select idtrabajador,count(idficha) as total from Ficha group by idtrabajador) re
+)
+
+--CTES
+WITH CTE_RE AS (select idtrabajador,count(idficha) as total from Ficha group by idtrabajador)
+select idtrabajador as [ID ENCUESTADOR],
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador) as [TOTAL FICHAS],
+(select AVG(re.total) from CTE_RE re) as [TOTAL PROM]
+from Trabajador t
+where t.tipo='E' and 
+--[TOTAL FICHAS]
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador)>
+--[TOTAL PROM]
+(select AVG(re.total) from CTE_RE re)
+
+--VISTAS
+CREATE VIEW dbo.V_REPORTE_E AS --CREAR UNA VISTA
+ALTER VIEW dbo.V_REPORTE_E AS --MODIFICAR UNA VISTA
+DROP VIEW dbo.V_REPORTE_E --ELIMINAR UNA VISTA
+WITH CTE_RE AS (select idtrabajador,count(idficha) as total from Ficha group by idtrabajador)
+select idtrabajador as [ID_ENCUESTADOR],
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador) as [TOTAL FICHAS],
+(select AVG(re.total) from CTE_RE re) as [TOTAL PROM],t.estado as ESTADO
+from Trabajador t
+where t.tipo='E' and 
+--[TOTAL FICHAS]
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador)>
+--[TOTAL PROM]
+(select AVG(re.total) from CTE_RE re)
+
+select ve.*,t.usuario from V_REPORTE_E ve 
+inner join Trabajador t on ve.[ID_ENCUESTADOR]=t.idtrabajador
+
+--FUNCIONES DE VALOR TABLA
+CREATE FUNCTION F_REPORTE_E() returns table as --CREAR UNA FUNCION DE VALOR TABLA
+ALTER FUNCTION F_REPORTE_E() returns table as --MODIFICAR UNA FUNCION DE VALOR TABLA
+DROP FUNCTION F_REPORTE_E --ELIMINAR UNA FUNCION DE VALOR TABLA
+return
+WITH CTE_RE AS (select idtrabajador,count(idficha) as total from Ficha group by idtrabajador)
+select idtrabajador as [ID_ENCUESTADOR],
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador) as [TOTAL FICHAS],
+(select AVG(re.total) from CTE_RE re) as [TOTAL PROM]
+from Trabajador t
+where t.tipo='E' and 
+--[TOTAL FICHAS]
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador)>
+--[TOTAL PROM]
+(select AVG(re.total) from CTE_RE re)
+
+--Validación
+select * from F_REPORTE_E()
+--FUNCION DE VALOR TABLA CON PARAMETRO
+
+ALTER FUNCTION F_REPORTE_E(@idencuestador int,@estado bit) returns table as --CREAR UNA FUNCION DE VALOR TABLA
+return
+WITH CTE_RE AS (select idtrabajador,count(idficha) as total from Ficha group by idtrabajador)
+select idtrabajador as [ID_ENCUESTADOR],
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador) as [TOTAL FICHAS],
+(select AVG(re.total) from CTE_RE re) as [TOTAL PROM]
+from Trabajador t
+where t.tipo='E' and t.idtrabajador=@idencuestador and t.estado=@estado and
+--[TOTAL FICHAS]
+(select count(idficha) from Ficha f where f.idtrabajador=t.idtrabajador)>
+--[TOTAL PROM]
+(select AVG(re.total) from CTE_RE re)
+
+select * from F_REPORTE_E(11,1)
+
+--05.13
+
+select GETUTCDATE()
+
+--05.14
+
+--Trabajadores que tienen fichas
+select usuario,contrasena,case when estado=1 then 'ACTIVO' else 'INACTIVO' end as estado,
+eomonth(getdate()) as CIERRE
+from Trabajador t
+where exists (select idficha from Ficha where idtrabajador=t.idtrabajador)
+
+--Trabajadores que tienen asignación
+select * from Trabajador t
+where idtrabajador in (select distinct idencuestador from Asignacion)
+
+--Trabajadores que NO tienen asignación
+select * from Trabajador t
+where idtrabajador not in (select distinct idencuestador from Asignacion)
